@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>3D Book</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r121/three.min.js"></script>
+  <style>
+    body { margin: 0; }
+    canvas { width: 100%; height: 100%; }
+  </style>
+</head>
+<body>
+
+  <script>
+    // set up the scene
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    // create the book cover and pages
+    const coverGeometry = new THREE.BoxGeometry(1, 1, 0.1);
+    const coverMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
+    const cover = new THREE.Mesh(coverGeometry, coverMaterial);
+    scene.add(cover);
+
+    const pagesGeometry = new THREE.BoxGeometry(0.9, 0.9, 0.05);
+    const pagesMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
+    const pages = new THREE.Mesh(pagesGeometry, pagesMaterial);
+    pages.position.z = 0.05;
+    cover.add(pages);
+
+    // create a light
+    const light = new THREE.PointLight(0xffffff, 1, 100);
+    light.position.set(0, 0, 1);
+    scene.add(light);
+
+    // create a color picker
+    const colorPicker = document.createElement("input");
+    colorPicker.type = "color";
+    colorPicker.value = "#ffffff";
+    colorPicker.addEventListener("change", () => {
+      coverMaterial.color.set(colorPicker.value);
+      pagesMaterial.color.set(colorPicker.value);
+    });
+    document.body.appendChild(colorPicker);
+
+    // create rotation controls
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    camera.position.set(1, 1, 2);
+    controls.update();
+
+    // render the scene
+    const animate = () => {
+      requestAnimationFrame(animate);
+      renderer.render(scene, camera);
+    };
+    animate();
+  </script>
+
+</body>
+</html>
